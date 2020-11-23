@@ -1,0 +1,19 @@
+{
+    "name": "liqiangYang/wish-api",
+    "description": "Wish Merchant Api",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "liqiang.yang",
+            "email": "nishuihan.yang@gmail.com",
+            "homepage": "https://github.com/liqiangYang"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Wish\\": "src"
+        }
+    },
+    "require": {
+    }
+}
