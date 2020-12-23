@@ -23,7 +23,7 @@ use Wish\Exception\ConnectionException;
 use Wish\WishResponse;
 
 class WishRequest {
-	const VERSION = "v2/";
+	const VERSION = "v2";
 	const BASE_PROD_PATH = "https://china-merchant.wish.com/api/";
 	const BASE_SANDBOX_PATH = "https://sandbox.merchant.wish.com/api/";
 	const BASE_STAGE_PATH = "https://merch.corp.contextlogic.com/api/";
@@ -31,17 +31,28 @@ class WishRequest {
 	private $method;
 	private $path;
 	private $params;
+	private $version;
 	public function __construct($session, $method, $path, $params = array()) {
 		$this->session = $session;
 		$this->method = $method;
 		$this->path = $path;
-		$params ["access_token"] = $session->getAPIKey ();
-		if ($session->getMerchantId ())
-			$params ['merchant_id'] = $session->merchant_id;
+//		$params ["access_token"] = $session->getAPIKey ();
+		if ($session->getMerchantId ()){
+            $params ['merchant_id'] = $session->merchant_id;
+        }
+		if (isset($params['version'])) {
+		    $this->version = $params['version'];
+		    unset($params['version']);
+        }
+
 		$this->params = $params;
 	}
 	public function getVersion() {
-		return static::VERSION;
+	    if ($this->version) {
+	        return $this->version;
+        }else{
+            return static::VERSION;
+        }
 	}
 	public function getRequestURL() {
 		switch ($this->session->getSessionType ()) {
@@ -56,7 +67,7 @@ class WishRequest {
 		}
 	}
 	public function execute() {
-		$url = $this->getRequestURL () . $this->getVersion () . $this->path;
+		$url = $this->getRequestURL () . $this->getVersion () ."/" . $this->path;
 		$curl = curl_init ();
 		$params = $this->params;
 		
@@ -67,9 +78,11 @@ class WishRequest {
 				CURLOPT_USERAGENT => 'wish-php-sdk',
 				CURLOPT_HEADER => 'true',
 				CURLOPT_SSL_VERIFYPEER => 'true',
-				CURLOPT_CAINFO => '/cert/ca.crt' 
+				CURLOPT_CAINFO => '/cert/ca.crt' ,
+                CURLOPT_HTTPHEADER => [
+                    'Authorization: Bearer ' . $this->session->getAPIKey(),
+                ]
 		);
-		
 		if ($this->method === "GET") {
 			$url = $url . "?" . http_build_query ( $params );
 		} else {

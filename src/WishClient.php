@@ -59,8 +59,8 @@ class WishClient{
   }
   
   public function refreshToken($clientid,$clientsecret, $refresh_token){
-      $params = array('client_id'=>$clientid,'client_secret'=>$clientsecret,'refresh_token'=>$refresh_token,'grant_type'=>'refresh_token');
-      $response = $this->getResponse('POST', 'oauth/refresh_token',$params);
+      $params = array('client_id'=>$clientid,'client_secret'=>$clientsecret,'refresh_token'=>$refresh_token,'grant_type'=>'refresh_token', 'version' => 'v3');
+      $response = $this->getResponse('GET', 'oauth/refresh_token',$params);
       return $response;
   }
   

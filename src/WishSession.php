@@ -22,9 +22,9 @@ class WishSession{
   const SESSION_PROD = 1;
   const SESSION_SANDBOX = 2;
   const SESSION_STAGE = 3;
-  private static $api_key;
-  private static $session_type;
-  private static $merchant_id;
+  public $api_key;
+  public $session_type;
+  public $merchant_id;
 
   public function __construct($api_key,$session_type,$merchant_id=null){
     $this->api_key = $api_key;
